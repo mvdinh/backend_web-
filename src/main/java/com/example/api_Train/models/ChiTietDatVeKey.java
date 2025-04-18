@@ -1,0 +1,33 @@
+package com.example.api_Train.models;
+
+import jakarta.persistence.Embeddable;
+import lombok.*;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+@Embeddable
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ChiTietDatVeKey implements Serializable {
+
+    private Integer maDatVe;
+    private Integer maVe;
+
+    // Ghi đè equals và hashCode
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof ChiTietDatVeKey))
+            return false;
+        ChiTietDatVeKey that = (ChiTietDatVeKey) o;
+        return Objects.equals(maDatVe, that.maDatVe) && Objects.equals(maVe, that.maVe);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(maDatVe, maVe);
+    }
+}
