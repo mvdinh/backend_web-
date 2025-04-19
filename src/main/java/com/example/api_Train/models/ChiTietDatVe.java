@@ -1,5 +1,7 @@
 package com.example.api_Train.models;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,4 +27,7 @@ public class ChiTietDatVe {
     @MapsId("maVe")
     @JoinColumn(name = "MaVe")
     private VeTau veTau;
+
+    @Column(name = "gia_ve")
+    private BigDecimal tongTienVe;
 }

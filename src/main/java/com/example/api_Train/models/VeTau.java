@@ -46,8 +46,6 @@ public class VeTau {
     @JoinColumn(name = "MaTinhTrangVe")
     private TinhTrangVe tinhTrangVe;
 
-    private BigDecimal tongTien;
-
     // Quan hệ nhiều-nhiều thông qua bảng ChiTietDatVe
     @OneToMany(mappedBy = "veTau", cascade = CascadeType.ALL)
     private List<ChiTietDatVe> chiTietDatVeList;

@@ -27,7 +27,6 @@ public class VeTauResponse {
                 .chuyenTau(ChuyenTauRes.mapChuyenTauResponse(veTau.getChuyenTau()))
                 .hanhKhach(HanhKhachResponse.mapHanhKhachResponse(veTau.getHanhKhach()))
                 .soGhe(veTau.getGhe().getTenGhe())
-                .giaVe(veTau.getTongTien())
                 .trangThai(veTau.getTinhTrangVe().getTinhTrangVe())
                 .build();
     }

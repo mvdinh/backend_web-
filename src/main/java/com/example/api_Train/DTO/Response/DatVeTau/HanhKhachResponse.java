@@ -21,12 +21,14 @@ public class HanhKhachResponse {
     private String hoTen;
     private String soGiayTo;
     private String ngaySinh;
+    private String tenLoaiKhach;
 
     public static HanhKhachResponse mapHanhKhachResponse(HanhKhach hanhKhach) {
         return HanhKhachResponse.builder()
                 .hoTen(hanhKhach.getHoTen())
                 .soGiayTo(hanhKhach.getSoGiayTo())
                 .ngaySinh(hanhKhach.getNgaySinh().toString())
+                .tenLoaiKhach(hanhKhach.getLoaiKhach().getTenLoaiKhach())
                 .build();
     }
 }

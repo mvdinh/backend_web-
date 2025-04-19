@@ -14,7 +14,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class HanhKhach {
+public class HanhKhachDTO {
 
     @JsonProperty("HoTen")
     private String hoTen;
@@ -25,6 +25,5 @@ public class HanhKhach {
     @JsonProperty("NgaySinh")
     private Date ngaySinh;
 
-    @JsonProperty("MaLoaiKhach")
-    private DoiTuong loaiKhach;
+    private Integer maloaiKhach;
 }

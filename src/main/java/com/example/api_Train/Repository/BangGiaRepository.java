@@ -9,6 +9,6 @@ import com.example.api_Train.models.Ghe;
 
 public interface BangGiaRepository extends JpaRepository<BangGia, Integer> {
 
-    Optional<Ghe> findByMaChuyenTauAndMaLoaiCho(Integer maChuyenTau, Integer maLoaiCho);
+    Optional<BangGia> findByChuyenTau_MaChuyenTauAndLoaiCho_MaLoaiCho(Integer maChuyenTau, Integer maLoaiCho);
 
 }

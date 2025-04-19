@@ -3,6 +3,8 @@ package com.example.api_Train.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -22,14 +24,15 @@ public class DatVe {
 
     @ManyToOne
     @JoinColumn(name = "MaNguoiDat")
-    private HanhKhach maNguoiDat;
+    private NguoiDatVe maNguoiDat;
 
-    @Temporal(TemporalType.DATE)
     @Column(name = "NgayDat")
-    private Date ngayDat;
+    private LocalDateTime ngayDat;
 
     @Column(name = "TrangThai", nullable = false)
     private String trangThai;
+
+    private BigDecimal tongTien;
 
     // Quan hệ nhiều-nhiều thông qua bảng ChiTietDatVe
     @OneToMany(mappedBy = "datVe", cascade = CascadeType.ALL)

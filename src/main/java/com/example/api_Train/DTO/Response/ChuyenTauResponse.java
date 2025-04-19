@@ -32,7 +32,6 @@ public class ChuyenTauResponse {
     }
 
     private static List<ToaTauResponse> mapToaTauToResponse(ChuyenTau chuyenTau) {
-        // Lấy danh sách toa từ TÀU của chuyến tàu
         return chuyenTau.getTau().getDanhSachToaTau().stream()
                 .map(toa -> ToaTauResponse.mapToaTauResponse(
                         toa,
