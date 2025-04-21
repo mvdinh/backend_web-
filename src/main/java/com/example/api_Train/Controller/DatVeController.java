@@ -37,13 +37,5 @@ public class DatVeController {
     /**
      * API hủy đặt vé
      */
-    @PutMapping("/{maDatVe}/huy")
-    public ResponseEntity<?> huyDatVe(@PathVariable Integer maDatVe) {
-        try {
-            DatVeResponse result = datVeService.huyDatVe(maDatVe);
-            return new ResponseEntity<>(result, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
+
 }

@@ -49,4 +49,8 @@ public class VeTau {
     // Quan hệ nhiều-nhiều thông qua bảng ChiTietDatVe
     @OneToMany(mappedBy = "veTau", cascade = CascadeType.ALL)
     private List<ChiTietDatVe> chiTietDatVeList;
+
+    @OneToMany(mappedBy = "veTau", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ThanhToan> danhSachThanhToan;
+
 }

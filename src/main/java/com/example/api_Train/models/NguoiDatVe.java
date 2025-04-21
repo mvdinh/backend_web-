@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -31,5 +32,8 @@ public class NguoiDatVe {
 
     @Column(nullable = false, unique = true, length = 50)
     private String cccd;
+
+    @OneToMany(mappedBy = "nguoiDatVe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ThanhToan> danhSachThanhToan;
 
 }

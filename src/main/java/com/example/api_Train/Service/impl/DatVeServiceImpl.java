@@ -45,6 +45,9 @@ public class DatVeServiceImpl {
     @Autowired
     private TinhTrangVeRepository tinhTrangVeRepository;
 
+    @Autowired
+    private DoiTuongRepository doiTuongRepository;
+
     /**
      * Đặt vé tàu
      * 
@@ -135,6 +138,10 @@ public class DatVeServiceImpl {
 
                 // Tạo đối tượng vé tàu
                 VeTau veTau = createVeTau(hanhKhach, chuyenTau, ghe, giaVe, tinhTrangVe);
+
+                // Liên kết vé tàu với đơn đặt vé
+                veTau = veTauRepository.save(veTau);
+
                 danhSachVe.add(veTau);
                 logger.info("Đã tạo vé tàu với mã: " + veTau.getMaVe());
 
@@ -165,55 +172,48 @@ public class DatVeServiceImpl {
     }
 
     /**
-     * Tạo chi tiết đặt vé
-     * 
-     * @param datVe        Đối tượng đặt vé
-     * @param veTau        Đối tượng vé tàu
-     * @param giaVeChiTiet Giá vé chi tiết
-     * @return ChiTietDatVe đã được tạo
-     * 
-     *         Lấy thông tin đặt vé theo mã đặt vé
-     * 
-     * @param maDatVe Mã đặt vé
-     * @return Thông tin đặt vé
+     * Tạo response cho đặt vé
      */
-
-    /**
-     * Hủy đặt vé
-     * 
-     * @param maDatVe Mã đặt vé
-     * @return Kết quả hủy đặt vé
-     */
-    @Transactional
-    public DatVeResponse huyDatVe(Integer maDatVe) {
-        if (maDatVe == null) {
-            throw new IllegalArgumentException("Mã đặt vé không được để trống");
+    private DatVeResponse createDatVeResponse(DatVe datVe, List<VeTau> danhSachVe) {
+        if (datVe == null) {
+            throw new IllegalArgumentException("Thông tin đặt vé không được để trống");
         }
 
-        DatVe datVe = datVeRepository.findById(maDatVe)
-                .orElseThrow(() -> new NotFound("Không tìm thấy đặt vé với mã: " + maDatVe));
+        // Map thông tin người đặt vé
+        DatVeResponse.NguoiDatVeResponse nguoiDatVeResponse = DatVeResponse.NguoiDatVeResponse
+                .mapNguoiDatVeResponse(datVe.getMaNguoiDat());
 
-        // Kiểm tra nếu đặt vé đã bị hủy
-        if ("CANCELLED".equals(datVe.getTrangThai())) {
-            throw new RuntimeException("Đặt vé này đã bị hủy trước đó");
+        // Map danh sách vé tàu
+        List<DatVeResponse.ChiTietVeResponse> chiTietVeList = new ArrayList<>();
+        for (VeTau veTau : danhSachVe) {
+            DatVeResponse.VeTauResponse veTauResponse = DatVeResponse.VeTauResponse.fromVeTau(veTau);
+            // Đảm bảo set giá vé vì phương thức fromVeTau trong class ví dụ không set giá
+            // vé
+            veTauResponse.setGiaVe(veTau.getBangGia().getGiaTien());
+
+            DatVeResponse.HanhKhachResponse hanhKhachResponse = DatVeResponse.HanhKhachResponse
+                    .mapHanhKhachResponse(veTau.getHanhKhach());
+
+            DatVeResponse.ChiTietVeResponse chiTietVeResponse = DatVeResponse.ChiTietVeResponse.builder()
+                    .veTau(veTauResponse)
+                    .hanhKhach(hanhKhachResponse)
+                    .build();
+
+            chiTietVeList.add(chiTietVeResponse);
         }
 
-        // Cập nhật trạng thái đặt vé
-        datVe.setTrangThai("CANCELLED");
-        datVe = datVeRepository.save(datVe);
-        logger.info("Đã hủy đặt vé: " + maDatVe);
-
-        // Cập nhật trạng thái các vé tàu
-        List<VeTau> danhSachVe = new ArrayList<>();
-
-        TinhTrangVe tinhTrangHuy = tinhTrangVeRepository.findById(2) // Giả sử id=2 là trạng thái hủy
-                .orElseThrow(() -> new NotFound("Không tìm thấy tình trạng vé hủy"));
-
-        DatVeResponse response = new DatVeResponse();
-        response.setMaDatVe(datVe.getMaDatVe());
-        response.setTrangThai("CANCELLED");
-
-        return response;
+        // Tạo response
+        return DatVeResponse.builder()
+                .maDatVe(datVe.getMaDatVe())
+                .ngayDatVe(new java.sql.Date(datVe.getNgayDat().toLocalDate().toEpochDay() * 86400000L)) // Chuyển
+                                                                                                         // LocalDateTime
+                                                                                                         // sang
+                                                                                                         // java.sql.Date
+                .trangThai(datVe.getTrangThai())
+                .nguoiDatVe(nguoiDatVeResponse)
+                .chiTietVeList(chiTietVeList)
+                .tongTien(datVe.getTongTien())
+                .build();
     }
 
     /**
@@ -229,38 +229,36 @@ public class DatVeServiceImpl {
         if (nguoiDatVeDTO.getCccd() != null && !nguoiDatVeDTO.getCccd().isEmpty()) {
             nguoiDatVe = nguoiDatVeRepository.findByCccd(nguoiDatVeDTO.getCccd());
         }
-        // Nếu không tìm thấy, tạo mới
+
         if (nguoiDatVe == null) {
             nguoiDatVe = new NguoiDatVe();
             nguoiDatVe.setHoTen(nguoiDatVeDTO.getHoTen());
             nguoiDatVe.setCccd(nguoiDatVeDTO.getCccd());
             nguoiDatVe.setEmail(nguoiDatVeDTO.getEmail());
             nguoiDatVe.setSoDienThoai(nguoiDatVeDTO.getSoDienThoai());
-            // Lưu đối tượng đặt vé mới
             nguoiDatVe = nguoiDatVeRepository.save(nguoiDatVe);
         }
         return nguoiDatVe;
     }
 
-    /**
-     * Tìm hoặc tạo hành khách
-     */
     private HanhKhach findOrCreateHanhKhach(HanhKhachDTO hanhKhachDTO) {
         if (hanhKhachDTO == null) {
             throw new IllegalArgumentException("Thông tin hành khách không được để trống");
         }
+        DoiTuong doiTuong = doiTuongRepository.findById(hanhKhachDTO.getMaloaiKhach())
+                .orElseThrow(() -> new NotFound("Không tìm thấy đối tượng với mã: " + hanhKhachDTO.getMaloaiKhach()));
 
         HanhKhach hanhKhach = null;
         if (hanhKhachDTO.getSoGiayTo() != null && !hanhKhachDTO.getSoGiayTo().isEmpty()) {
             hanhKhach = hanhKhachRepository.findBySoGiayTo(hanhKhachDTO.getSoGiayTo());
         }
 
-        // Nếu không tìm thấy hành khách, tạo mới
         if (hanhKhach == null) {
             hanhKhach = new HanhKhach();
             hanhKhach.setHoTen(hanhKhachDTO.getHoTen());
             hanhKhach.setSoGiayTo(hanhKhachDTO.getSoGiayTo());
             hanhKhach.setNgaySinh(hanhKhachDTO.getNgaySinh());
+            hanhKhach.setLoaiKhach(doiTuong);
             hanhKhach = hanhKhachRepository.save(hanhKhach);
         }
         return hanhKhach;
@@ -286,30 +284,6 @@ public class DatVeServiceImpl {
         return veTauRepository.save(veTau);
     }
 
-    /**
-     * Tạo response cho đặt vé
-     */
-    private DatVeResponse createDatVeResponse(DatVe datVe, List<VeTau> danhSachVe) {
-        if (datVe == null) {
-            throw new IllegalArgumentException("Thông tin đặt vé không được để trống");
-        }
-
-        DatVeResponse response = new DatVeResponse();
-        response.setMaDatVe(datVe.getMaDatVe());
-        response.setTrangThai(datVe.getTrangThai());
-
-        // Thêm thông tin về người đặt vé nếu có
-
-        return response;
-    }
-
-    /**
-     * Tính giá vé theo loại khách hàng
-     * 
-     * @param giaTien   Giá vé gốc
-     * @param loaiKhach Loại khách hàng
-     * @return Giá vé sau khi tính toán
-     */
     private BigDecimal tinhGiaVeTheoLoaiKhach(BigDecimal giaTien, Integer maLoaiKhach) {
         if (giaTien == null) {
             throw new IllegalArgumentException("Giá tiền không được để trống");
@@ -327,7 +301,7 @@ public class DatVeServiceImpl {
             case 3:
                 return giaTien.multiply(new BigDecimal("0.8")); // Giảm 20% cho sinh viên
             default:
-                return giaTien; // Giá gốc cho người lớn và các trường hợp khác
+                return giaTien;
         }
     }
 }
