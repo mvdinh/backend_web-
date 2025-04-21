@@ -16,13 +16,10 @@ import lombok.*;
 
 public class HanhKhachDTO {
 
-    @JsonProperty("HoTen")
     private String hoTen;
 
-    @JsonProperty("SoGiayTo")
     private String soGiayTo;
 
-    @JsonProperty("NgaySinh")
     private Date ngaySinh;
 
     private Integer maloaiKhach;

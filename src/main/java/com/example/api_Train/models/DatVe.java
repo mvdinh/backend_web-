@@ -19,7 +19,8 @@ import java.util.List;
 public class DatVe {
 
     @Id
-    @Column(name = "MaDatVe")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "MaDatVe", nullable = false)
     private Integer maDatVe;
 
     @ManyToOne

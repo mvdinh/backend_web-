@@ -39,6 +39,7 @@ public class HanhKhachImpl implements HanhKhachService {
 
         // Lưu đối tượng mới mà không cần cung cấp ID (Spring sẽ tự động tạo ID)
         hanhKhach = hanhKhachRepository.save(hanhKhach);
+        System.out.println(">>>> Mã đặt vé: " + hanhKhach.getMaHanhKhach());
 
         // Chuyển đổi sang DTO và trả về
         return HanhKhachResponse.mapHanhKhachResponse(hanhKhach);

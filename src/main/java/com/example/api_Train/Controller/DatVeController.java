@@ -20,7 +20,8 @@ public class DatVeController {
     /**
      * API đặt vé tàu
      */
-    @PostMapping
+
+    @PostMapping("/add")
     public ResponseEntity<?> datVe(@Valid @RequestBody DatVeDTO datVeDTO) {
         try {
             DatVeResponse result = datVeService.datVe(datVeDTO);
@@ -33,16 +34,6 @@ public class DatVeController {
     /**
      * API lấy thông tin đặt vé theo mã
      */
-    @GetMapping("/{maDatVe}")
-    public ResponseEntity<?> getByMaDatVe(@PathVariable Integer maDatVe) {
-        try {
-            DatVeResponse result = datVeService.getByMaDatVe(maDatVe);
-            return new ResponseEntity<>(result, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
-
     /**
      * API hủy đặt vé
      */

@@ -15,19 +15,17 @@ import lombok.*;
 @Table(name = "ChiTietDatVe")
 public class ChiTietDatVe {
 
-    @EmbeddedId
-    private ChiTietDatVeKey id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id; // ID tự động tăng
 
     @ManyToOne
-    @MapsId("maDatVe")
-    @JoinColumn(name = "MaDatVe")
+    @JoinColumn(name = "MaDatVe") // Khớp với tên cột trong DB
     private DatVe datVe;
 
     @ManyToOne
-    @MapsId("maVe")
-    @JoinColumn(name = "MaVe")
+    @JoinColumn(name = "MaVe") // Khớp với tên cột trong DB
     private VeTau veTau;
 
-    @Column(name = "gia_ve")
-    private BigDecimal tongTienVe;
+    // Các trường khác nếu có trong DB
 }

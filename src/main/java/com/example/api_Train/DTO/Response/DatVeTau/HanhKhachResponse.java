@@ -25,6 +25,7 @@ public class HanhKhachResponse {
 
     public static HanhKhachResponse mapHanhKhachResponse(HanhKhach hanhKhach) {
         return HanhKhachResponse.builder()
+                .maHanhKhach(hanhKhach.getMaHanhKhach())
                 .hoTen(hanhKhach.getHoTen())
                 .soGiayTo(hanhKhach.getSoGiayTo())
                 .ngaySinh(hanhKhach.getNgaySinh().toString())

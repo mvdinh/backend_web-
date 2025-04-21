@@ -20,7 +20,7 @@ public class ChiTietDatVeKey implements Serializable {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof ChiTietDatVeKey))
+        if (o == null || getClass() != o.getClass())
             return false;
         ChiTietDatVeKey that = (ChiTietDatVeKey) o;
         return Objects.equals(maDatVe, that.maDatVe) && Objects.equals(maVe, that.maVe);
