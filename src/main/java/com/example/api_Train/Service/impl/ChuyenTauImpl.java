@@ -1,100 +1,134 @@
 package com.example.api_Train.Service.impl;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.example.api_Train.DTO.RequestDTO.ChuyenTauDTO;
-import com.example.api_Train.Repository.ChuyenTauRepository;
-import com.example.api_Train.Repository.TauRepository;
-import com.example.api_Train.Repository.TuyenDuongRepository;
+import com.example.api_Train.DTO.Request.ChuyenTauRequest;
+import com.example.api_Train.DTO.Response.ChuyenTauResponse;
+import com.example.api_Train.Repository.*;
 import com.example.api_Train.Service.interf.ChuyenTauService;
-import com.example.api_Train.models.ChuyenTau;
-import com.example.api_Train.models.Tau;
-import com.example.api_Train.models.TuyenDuong;
+import com.example.api_Train.models.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ChuyenTauImpl implements ChuyenTauService {
 
-        private final TauRepository tauRepository;
-        private final TuyenDuongRepository tuyenDuongRepository;
-        private final ChuyenTauRepository chuyenTauRepository;
+        private final ChuyenTauRepository chuyenTauRepo;
+        private final TauRepository tauRepo;
+        private final TuyenDuongRepository tuyenDuongRepo;
+        private final BangGiaRepository bangGiaRepo;
+        private final LoaiChoRepository loaiChoRepo;
 
-        @Autowired
-        public ChuyenTauImpl(
-                        TauRepository tauRepository,
-                        TuyenDuongRepository tuyenDuongRepository,
-                        ChuyenTauRepository chuyenTauRepository) {
-                this.tauRepository = tauRepository;
-                this.tuyenDuongRepository = tuyenDuongRepository;
-                this.chuyenTauRepository = chuyenTauRepository;
+        private static final Logger logger = LoggerFactory.getLogger(ChuyenTauImpl.class);
+
+        @Override
+        @Transactional
+        public ChuyenTauResponse themChuyenTau(ChuyenTauRequest request) {
+                try {
+                        ChuyenTau chuyenTau = ChuyenTau.builder()
+                                        .tau(tauRepo.findById(request.getMaTau())
+                                                        .orElseThrow(() -> new RuntimeException("Không tìm thấy tàu.")))
+                                        .tuyenDuong(tuyenDuongRepo.findById(request.getMaTuyen()).orElseThrow(
+                                                        () -> new RuntimeException("Không tìm thấy tuyến đường.")))
+                                        .ngayGioKhoiHanh(request.getNgayGioKhoiHanh())
+                                        .build();
+
+                        ChuyenTau savedChuyenTau = chuyenTauRepo.save(chuyenTau);
+
+                        List<BangGia> bangGiaList = request.getDanhSachBangGia().stream().map(bgReq -> BangGia.builder()
+                                        .chuyenTau(savedChuyenTau)
+                                        .tau(savedChuyenTau.getTau())
+                                        .loaiCho(loaiChoRepo.findById(bgReq.getMaLoaiCho()).orElseThrow(
+                                                        () -> new RuntimeException("Không tìm thấy loại chỗ.")))
+                                        .giaTien(bgReq.getGiaTien())
+                                        .build()).collect(Collectors.toList());
+
+                        bangGiaRepo.saveAll(bangGiaList);
+
+                        chuyenTau.setDanhSachBangGia(bangGiaList);
+
+                        return ChuyenTauResponse.mapChuyenTauResponse(chuyenTau);
+                } catch (Exception e) {
+                        logger.error("Lỗi khi thêm chuyến tàu: ", e);
+                        throw new RuntimeException("Lỗi khi thêm chuyến tàu: " + e.getMessage());
+                }
         }
 
         @Override
-        public ChuyenTau createChuyenTau(ChuyenTauDTO chuyenTauDTO) {
-                Tau tau = tauRepository.findById(chuyenTauDTO.getMaTau())
-                                .orElseThrow(() -> new RuntimeException("Tau not found"));
+        @Transactional
+        public ChuyenTauResponse suaChuyenTau(Integer id, ChuyenTauRequest request) {
+                try {
+                        ChuyenTau chuyenTau = chuyenTauRepo.findById(id)
+                                        .orElseThrow(() -> new RuntimeException("Không tìm thấy chuyến tàu"));
 
-                TuyenDuong tuyenDuong = tuyenDuongRepository.findById(chuyenTauDTO.getMaTuyenDuong())
-                                .orElseThrow(() -> new RuntimeException("TuyenDuong not found"));
+                        chuyenTau.setTau(tauRepo.findById(request.getMaTau())
+                                        .orElseThrow(() -> new RuntimeException("Không tìm thấy tàu.")));
+                        chuyenTau.setTuyenDuong(tuyenDuongRepo.findById(request.getMaTuyen())
+                                        .orElseThrow(() -> new RuntimeException("Không tìm thấy tuyến đường.")));
+                        chuyenTau.setNgayGioKhoiHanh(request.getNgayGioKhoiHanh());
 
-                ChuyenTau chuyenTau = ChuyenTau.builder()
-                                .tau(tau)
-                                .ngayGioKhoiHanh(chuyenTauDTO.getNgayGioKhoiHanh())
-                                .tuyenDuong(tuyenDuong)
-                                .build();
+                        bangGiaRepo.deleteAllByChuyenTau_MaChuyenTau(id);
 
-                return chuyenTauRepository.save(chuyenTau);
+                        List<BangGia> bangGiaList = request.getDanhSachBangGia().stream().map(bgReq -> BangGia.builder()
+                                        .chuyenTau(chuyenTau)
+                                        .tau(chuyenTau.getTau())
+                                        .loaiCho(loaiChoRepo.findById(bgReq.getMaLoaiCho()).orElseThrow(
+                                                        () -> new RuntimeException("Không tìm thấy loại chỗ.")))
+                                        .giaTien(bgReq.getGiaTien())
+                                        .build()).collect(Collectors.toList());
+
+                        bangGiaRepo.saveAll(bangGiaList);
+                        chuyenTau.setDanhSachBangGia(bangGiaList);
+
+                        return ChuyenTauResponse.mapChuyenTauResponse(chuyenTauRepo.save(chuyenTau));
+                } catch (Exception e) {
+                        logger.error("Lỗi khi sửa chuyến tàu với ID {}: ", id, e);
+                        throw new RuntimeException("Lỗi khi sửa chuyến tàu: " + e.getMessage());
+                }
         }
 
         @Override
-        public ChuyenTau updateChuyenTau(Integer maChuyenTau, ChuyenTauDTO chuyenTauDTO) {
-                ChuyenTau chuyenTau = chuyenTauRepository.findById(maChuyenTau)
-                                .orElseThrow(() -> new RuntimeException("Chuyen tau not found"));
+        @Transactional
+        public void xoaChuyenTau(Integer id) {
+                try {
+                        if (!chuyenTauRepo.existsById(id)) {
+                                throw new RuntimeException("Không tìm thấy chuyến tàu.");
+                        }
 
-                Tau tau = tauRepository.findById(chuyenTauDTO.getMaTau())
-                                .orElseThrow(() -> new RuntimeException("Tau not found"));
+                        bangGiaRepo.deleteAllByChuyenTau_MaChuyenTau(id);
+                        chuyenTauRepo.deleteById(id);
 
-                TuyenDuong tuyenDuong = tuyenDuongRepository.findById(chuyenTauDTO.getMaTuyenDuong())
-                                .orElseThrow(() -> new RuntimeException("Tuyen duong not found"));
-
-                chuyenTau.setTau(tau);
-                chuyenTau.setNgayGioKhoiHanh(chuyenTauDTO.getNgayGioKhoiHanh());
-                chuyenTau.setTuyenDuong(tuyenDuong);
-
-                return chuyenTauRepository.save(chuyenTau);
+                } catch (Exception e) {
+                        logger.error("Lỗi khi xóa chuyến tàu với ID {}: ", id, e);
+                        throw new RuntimeException("Lỗi khi xóa chuyến tàu: " + e.getMessage());
+                }
         }
 
         @Override
-        public ChuyenTau getChuyenTauById(Integer maChuyenTau) {
-                return chuyenTauRepository.findById(maChuyenTau)
-                                .orElseThrow(() -> new RuntimeException("Chuyen tau not found"));
+        public ChuyenTauResponse layChiTietChuyenTau(Integer id) {
+                try {
+                        return ChuyenTauResponse.mapChuyenTauResponse(chuyenTauRepo.findById(id)
+                                        .orElseThrow(() -> new RuntimeException("Không tìm thấy chuyến tàu")));
+                } catch (Exception e) {
+                        logger.error("Lỗi khi lấy chi tiết chuyến tàu với ID {}: ", id, e);
+                        throw new RuntimeException("Lỗi khi lấy chi tiết chuyến tàu: " + e.getMessage());
+                }
         }
 
         @Override
-        public void deleteChuyenTau(Integer maChuyenTau) {
-                ChuyenTau chuyenTau = chuyenTauRepository.findById(maChuyenTau)
-                                .orElseThrow(() -> new RuntimeException("Chuyen tau not found"));
-                chuyenTauRepository.delete(chuyenTau);
+        public List<ChuyenTauResponse> layTatCaChuyenTau() {
+                try {
+                        return chuyenTauRepo.findAll().stream()
+                                        .map(ChuyenTauResponse::mapChuyenTauResponse)
+                                        .collect(Collectors.toList());
+                } catch (Exception e) {
+                        logger.error("Lỗi khi lấy tất cả chuyến tàu: ", e);
+                        throw new RuntimeException("Lỗi khi lấy tất cả chuyến tàu: " + e.getMessage());
+                }
         }
-
-        @Override
-        public List<ChuyenTau> getAllChuyenTauByMaTuyen(Integer maTuyen) {
-                return chuyenTauRepository.findAllByTuyenDuong_MaTuyen(maTuyen);
-        }
-
-        public List<ChuyenTau> getAllChuyenTau() {
-                return chuyenTauRepository.findAll();
-        }
-
-        @Override
-        public List<ChuyenTau> getChuyenTauByNgayGioKhoiHanh(LocalDateTime ngayGioKhoiHanh) {
-                LocalDateTime startOfDay = ngayGioKhoiHanh.toLocalDate().atStartOfDay(); // 00:00
-                LocalDateTime endOfDay = startOfDay.plusDays(1).minusSeconds(1); // 23:59:59
-
-                return chuyenTauRepository.findAllByNgayGioKhoiHanhBetween(startOfDay, endOfDay);
-        }
-
 }

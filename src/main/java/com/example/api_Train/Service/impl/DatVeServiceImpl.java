@@ -1,6 +1,6 @@
 package com.example.api_Train.Service.impl;
 
-import com.example.api_Train.DTO.RequestDTO.DatVe.*;
+import com.example.api_Train.DTO.Request.DatVe.*;
 import com.example.api_Train.DTO.Response.DatVeTau.DatVeResponse;
 import com.example.api_Train.Exception.NotFound;
 import com.example.api_Train.Repository.*;

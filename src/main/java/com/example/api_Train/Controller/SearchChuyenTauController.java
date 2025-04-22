@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,6 +68,24 @@ public class SearchChuyenTauController {
             return ResponseEntity.internalServerError().body(Map.of(
                     "error", "Lỗi hệ thống khi tìm kiếm chuyến tàu",
                     "timestamp", LocalDateTime.now()));
+        }
+    }
+
+    @GetMapping("/today")
+    public ResponseEntity<?> getAllChuyenTauForToday() {
+        try {
+            // Fetch the top 8 train journeys for today
+            List<ChuyenTau> results = searchService.getAllChuyenTauForToday();
+
+            if (results.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Không có chuyến tàu nào cho hôm nay.");
+            }
+
+            return ResponseEntity.ok(results);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Đã xảy ra lỗi khi lấy chuyến tàu hôm nay: " + e.getMessage());
         }
     }
 }

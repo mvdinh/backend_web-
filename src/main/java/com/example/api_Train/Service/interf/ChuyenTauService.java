@@ -1,23 +1,20 @@
 package com.example.api_Train.Service.interf;
 
-import java.time.LocalDateTime;
+// ChuyenTauService.java
+
+import com.example.api_Train.DTO.Request.ChuyenTauRequest;
+import com.example.api_Train.DTO.Response.ChuyenTauResponse;
+
 import java.util.List;
 
-import com.example.api_Train.DTO.RequestDTO.ChuyenTauDTO;
-import com.example.api_Train.models.ChuyenTau;
-
 public interface ChuyenTauService {
-    ChuyenTau createChuyenTau(ChuyenTauDTO chuyenTauDTO);
+    ChuyenTauResponse themChuyenTau(ChuyenTauRequest request);
 
-    ChuyenTau updateChuyenTau(Integer maChuyenTau, ChuyenTauDTO chuyenTauDTO);
+    ChuyenTauResponse suaChuyenTau(Integer id, ChuyenTauRequest request);
 
-    ChuyenTau getChuyenTauById(Integer maChuyenTau);
+    void xoaChuyenTau(Integer id);
 
-    void deleteChuyenTau(Integer maChuyenTau);
+    ChuyenTauResponse layChiTietChuyenTau(Integer id);
 
-    List<ChuyenTau> getAllChuyenTauByMaTuyen(Integer maTuyenDuong);
-
-    List<ChuyenTau> getAllChuyenTau();
-
-    List<ChuyenTau> getChuyenTauByNgayGioKhoiHanh(LocalDateTime ngayGioKhoiHanh);
+    List<ChuyenTauResponse> layTatCaChuyenTau();
 }

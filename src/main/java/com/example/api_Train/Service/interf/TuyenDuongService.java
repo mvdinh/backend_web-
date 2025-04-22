@@ -1,6 +1,6 @@
 package com.example.api_Train.Service.interf;
 
-import com.example.api_Train.DTO.RequestDTO.TuyenDuongDTO;
+import com.example.api_Train.DTO.Request.TuyenDuongDTO;
 import com.example.api_Train.DTO.Response.TuyenDuongResponse;
 import com.example.api_Train.models.TuyenDuong;
 
@@ -14,9 +14,8 @@ public interface TuyenDuongService {
 
     void deleteTuyenDuong(Integer id);
 
-    TuyenDuong getTuyenDuongById(Integer id);
+    TuyenDuongResponse getTuyenDuongById(Integer id);
 
     List<TuyenDuongResponse> getAllTuyenDuong();
 
-    List<TuyenDuongResponse> searchTuyenDuong(Integer maTuyenDuong);
 }

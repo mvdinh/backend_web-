@@ -1,6 +1,6 @@
 package com.example.api_Train.Service.interf;
 
-import com.example.api_Train.DTO.RequestDTO.DatVe.DatVeDTO;
+import com.example.api_Train.DTO.Request.DatVe.DatVeDTO;
 import com.example.api_Train.models.DatVe;
 import com.example.api_Train.models.LoaiCho;
 import com.example.api_Train.models.NguoiDung;

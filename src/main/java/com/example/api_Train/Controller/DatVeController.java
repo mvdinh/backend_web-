@@ -1,6 +1,6 @@
 package com.example.api_Train.Controller;
 
-import com.example.api_Train.DTO.RequestDTO.DatVe.DatVeDTO;
+import com.example.api_Train.DTO.Request.DatVe.DatVeDTO;
 import com.example.api_Train.DTO.Response.DatVeTau.DatVeResponse;
 import com.example.api_Train.Service.impl.DatVeServiceImpl;
 

@@ -1,6 +1,6 @@
 package com.example.api_Train.Service.interf;
 
-import com.example.api_Train.DTO.RequestDTO.BangGiaDTO;
+import com.example.api_Train.DTO.Request.BangGiaDTO;
 import com.example.api_Train.models.BangGia;
 
 public interface BangGiaService {

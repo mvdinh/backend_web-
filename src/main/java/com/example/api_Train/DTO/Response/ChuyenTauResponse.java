@@ -6,9 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.example.api_Train.models.ChuyenTau;
-import com.example.api_Train.models.ToaTau;
-import com.example.api_Train.models.BangGia;
+import com.example.api_Train.models.*;
 
 @Data
 @Builder
@@ -21,6 +19,28 @@ public class ChuyenTauResponse {
     private TuyenDuongResponse tuyenDuong;
     private List<ToaTauResponse> danhSachToaTau;
 
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ToaTauResponse {
+        private Integer maToa;
+        private String tenToa;
+        private String loaiToa;
+        private List<GheResponse> danhSachGhe;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class GheResponse {
+        private Integer maGhe;
+        private String tenGhe;
+        private String trangThai;
+        private BigDecimal giaVe;
+    }
+
     public static ChuyenTauResponse mapChuyenTauResponse(ChuyenTau chuyenTau) {
         return ChuyenTauResponse.builder()
                 .maChuyenTau(chuyenTau.getMaChuyenTau())
@@ -32,12 +52,38 @@ public class ChuyenTauResponse {
     }
 
     private static List<ToaTauResponse> mapToaTauToResponse(ChuyenTau chuyenTau) {
-        return chuyenTau.getTau().getDanhSachToaTau().stream()
-                .map(toa -> ToaTauResponse.mapToaTauResponse(
-                        toa,
-                        chuyenTau,
-                        chuyenTau.getDanhSachBangGia() // Truyền danh sách giá từ chuyến tàu
-                ))
+        List<ToaTau> danhSachToa = chuyenTau.getTau().getDanhSachToaTau();
+        List<BangGia> bangGias = chuyenTau.getDanhSachBangGia();
+
+        return danhSachToa.stream()
+                .map(toa -> {
+                    LoaiCho loaiCho = toa.getLoaiCho();
+
+                    BigDecimal giaVe = bangGias.stream()
+                            .filter(bg -> bg.getLoaiCho().equals(loaiCho)
+                                    && bg.getTau().equals(chuyenTau.getTau()))
+                            .findFirst()
+                            .map(BangGia::getGiaTien)
+                            .orElse(BigDecimal.ZERO);
+
+                    return ToaTauResponse.builder()
+                            .maToa(toa.getMaToa())
+                            .tenToa(toa.getTenToa())
+                            .loaiToa(loaiCho.getTenLoaiCho())
+                            .danhSachGhe(mapGheToResponse(toa, giaVe))
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
+
+    public static List<GheResponse> mapGheToResponse(ToaTau toa, BigDecimal giaVe) {
+        return toa.getDanhSachGhe().stream()
+                .map((Ghe ghe) -> GheResponse.builder()
+                        .maGhe(ghe.getMaGhe())
+                        .tenGhe(ghe.getTenGhe())
+                        .trangThai(ghe.getTrangThai())
+                        .giaVe(giaVe)
+                        .build())
                 .collect(Collectors.toList());
     }
 }

@@ -1,4 +1,4 @@
-package com.example.api_Train.DTO.RequestDTO.DatVe;
+package com.example.api_Train.DTO.Request.DatVe;
 
 import lombok.*;
 import jakarta.validation.constraints.*;

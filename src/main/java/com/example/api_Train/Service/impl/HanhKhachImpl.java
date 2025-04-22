@@ -1,6 +1,6 @@
 package com.example.api_Train.Service.impl;
 
-import com.example.api_Train.DTO.RequestDTO.DatVe.HanhKhachDTO;
+import com.example.api_Train.DTO.Request.DatVe.HanhKhachDTO;
 import com.example.api_Train.DTO.Response.DatVeTau.HanhKhachResponse;
 import com.example.api_Train.Repository.DoiTuongRepository;
 import com.example.api_Train.Repository.HanhKhachRepository;
@@ -39,7 +39,7 @@ public class HanhKhachImpl implements HanhKhachService {
 
         // Lưu đối tượng mới mà không cần cung cấp ID (Spring sẽ tự động tạo ID)
         hanhKhach = hanhKhachRepository.save(hanhKhach);
-        System.out.println(">>>> Mã đặt vé: " + hanhKhach.getMaHanhKhach());
+        System.out.println(">>>> Mã hành khách: " + hanhKhach.getMaHanhKhach());
 
         // Chuyển đổi sang DTO và trả về
         return HanhKhachResponse.mapHanhKhachResponse(hanhKhach);

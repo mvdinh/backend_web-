@@ -1,6 +1,6 @@
 package com.example.api_Train.Service.interf;
 
-import com.example.api_Train.DTO.RequestDTO.DatVe.HanhKhachDTO;
+import com.example.api_Train.DTO.Request.DatVe.HanhKhachDTO;
 import com.example.api_Train.DTO.Response.DatVeTau.HanhKhachResponse;
 
 import java.util.List;

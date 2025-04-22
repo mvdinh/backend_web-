@@ -1,4 +1,4 @@
-package com.example.api_Train.DTO.RequestDTO;
+package com.example.api_Train.DTO.Request;
 
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonProperty;

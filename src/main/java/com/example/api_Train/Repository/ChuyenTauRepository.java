@@ -12,26 +12,29 @@ import com.example.api_Train.models.ChuyenTau;
 
 @Repository
 public interface ChuyenTauRepository extends JpaRepository<ChuyenTau, Integer> {
-    List<ChuyenTau> findAllByTuyenDuong_MaTuyen(Integer maTuyen);
+        List<ChuyenTau> findAllByTuyenDuong_MaTuyen(Integer maTuyen);
 
-    List<ChuyenTau> findAllByNgayGioKhoiHanhAfter(LocalDateTime start);
+        List<ChuyenTau> findAllByNgayGioKhoiHanhAfter(LocalDateTime start);
 
-    List<ChuyenTau> findAllByNgayGioKhoiHanhBetween(LocalDateTime start, LocalDateTime end);
+        List<ChuyenTau> findAllByNgayGioKhoiHanhBetween(LocalDateTime start, LocalDateTime end);
 
-    // Phương thức tìm chuyến tàu theo ga đi, ga đến và khoảng thời gian (từ ngày
-    // hiện tại trở đi)
-    @Query("SELECT DISTINCT ct FROM ChuyenTau ct " +
-            "JOIN FETCH ct.tuyenDuong td " +
-            "JOIN FETCH td.gaDi " +
-            "JOIN FETCH td.gaDen " +
-            "WHERE LOWER(td.gaDi.tenGa) LIKE LOWER(CONCAT('%', :tenGaDi, '%')) " +
-            "AND LOWER(td.gaDen.tenGa) LIKE LOWER(CONCAT('%', :tenGaDen, '%')) " +
-            "AND ct.ngayGioKhoiHanh BETWEEN :startOfDay AND :endOfDay " +
-            "ORDER BY ct.ngayGioKhoiHanh ASC")
-    List<ChuyenTau> findChuyenTauInDay(
-            @Param("tenGaDi") String tenGaDi,
-            @Param("tenGaDen") String tenGaDen,
-            @Param("startOfDay") LocalDateTime startOfDay,
-            @Param("endOfDay") LocalDateTime endOfDay);
+        // Phương thức tìm chuyến tàu theo ga đi, ga đến và khoảng thời gian (từ ngày
+        // hiện tại trở đi)
+        @Query("SELECT DISTINCT ct FROM ChuyenTau ct " +
+                        "JOIN FETCH ct.tuyenDuong td " +
+                        "JOIN FETCH td.gaDi " +
+                        "JOIN FETCH td.gaDen " +
+                        "WHERE LOWER(td.gaDi.tenGa) LIKE LOWER(CONCAT('%', :tenGaDi, '%')) " +
+                        "AND LOWER(td.gaDen.tenGa) LIKE LOWER(CONCAT('%', :tenGaDen, '%')) " +
+                        "AND ct.ngayGioKhoiHanh BETWEEN :startOfDay AND :endOfDay " +
+                        "ORDER BY ct.ngayGioKhoiHanh ASC")
+        List<ChuyenTau> findChuyenTauInDay(
+                        @Param("tenGaDi") String tenGaDi,
+                        @Param("tenGaDen") String tenGaDen,
+                        @Param("startOfDay") LocalDateTime startOfDay,
+                        @Param("endOfDay") LocalDateTime endOfDay);
+
+        @Query("SELECT c FROM ChuyenTau c WHERE c.ngayGioKhoiHanh BETWEEN :startOfDay AND :endOfDay ORDER BY c.ngayGioKhoiHanh ASC")
+        List<ChuyenTau> findTop8ChuyenTauForToday(LocalDateTime startOfDay, LocalDateTime endOfDay);
 
 }

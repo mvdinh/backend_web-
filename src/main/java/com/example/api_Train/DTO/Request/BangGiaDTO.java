@@ -1,4 +1,4 @@
-package com.example.api_Train.DTO.RequestDTO;
+package com.example.api_Train.DTO.Request;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

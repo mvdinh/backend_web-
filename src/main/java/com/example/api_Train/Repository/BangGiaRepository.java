@@ -12,4 +12,6 @@ public interface BangGiaRepository extends JpaRepository<BangGia, Integer> {
 
     Optional<BangGia> findByChuyenTau_MaChuyenTauAndLoaiCho_MaLoaiCho(Integer maChuyenTau, Integer maLoaiCho);
 
+    void deleteAllByChuyenTau_MaChuyenTau(Integer id);
+
 }
