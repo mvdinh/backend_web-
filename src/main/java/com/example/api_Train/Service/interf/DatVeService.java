@@ -9,4 +9,6 @@ import com.example.api_Train.models.VeTau;
 
 public interface DatVeService {
     public DatVeResponse datVe(DatVeRequest datVeRequest);
+
+    public DatVeResponse getByMaDatVe(Integer maDatVe);
 }

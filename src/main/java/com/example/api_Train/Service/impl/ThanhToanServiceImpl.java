@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.api_Train.DTO.Response.DatVeResponse;
-import com.example.api_Train.DTO.Response.DatVeResponse.ChiTietVeResponse;
 import com.example.api_Train.DTO.Response.HanhKhachResponse;
 import com.example.api_Train.DTO.Response.NguoiDatVeResponse;
 import com.example.api_Train.DTO.Response.VeTauResponse;

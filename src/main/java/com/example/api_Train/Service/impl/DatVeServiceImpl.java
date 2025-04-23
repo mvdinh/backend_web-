@@ -306,21 +306,12 @@ public class DatVeServiceImpl implements DatVeService {
         // Tạo đối tượng response cho người đặt vé
         NguoiDatVeResponse nguoiDatVeResponse = NguoiDatVeResponse.mapNguoiDatVeResponse(datVe.getMaNguoiDat());
 
-        // Tạo danh sách chi tiết vé
-        List<ChiTietVeResponse> chiTietVeList = new ArrayList<>();
+        // Tạo danh sách vé tàu
+        List<VeTauResponse> veTauList = new ArrayList<>();
         for (VeTau veTau : danhSachVe) {
             // Tạo đối tượng response cho vé tàu
             VeTauResponse veTauResponse = VeTauResponse.fromVeTau(veTau);
-
-            // Tạo đối tượng response cho hành khách
-            HanhKhachResponse hanhKhachResponse = HanhKhachResponse.mapHanhKhachResponse(veTau.getHanhKhach());
-
-            // Tạo đối tượng response cho chi tiết vé
-            ChiTietVeResponse chiTietVeResponse = new ChiTietVeResponse();
-            chiTietVeResponse.setVeTau(veTauResponse);
-            chiTietVeResponse.setHanhKhach(hanhKhachResponse);
-
-            chiTietVeList.add(chiTietVeResponse);
+            veTauList.add(veTauResponse);
         }
 
         // Tạo đối tượng response cho đặt vé
@@ -329,7 +320,7 @@ public class DatVeServiceImpl implements DatVeService {
         datVeResponse.setNgayDatVe(Date.valueOf(datVe.getNgayDat().toLocalDate()));
         datVeResponse.setTrangThai(datVe.getTrangThai());
         datVeResponse.setNguoiDatVe(nguoiDatVeResponse);
-        datVeResponse.setChiTietVeList(chiTietVeList);
+        datVeResponse.setVeTaus(veTauList);
         datVeResponse.setTongTien(datVe.getTongTien());
 
         return datVeResponse;

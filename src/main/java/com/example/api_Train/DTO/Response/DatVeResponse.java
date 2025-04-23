@@ -14,16 +14,7 @@ public class DatVeResponse {
     private Date ngayDatVe;
     private String trangThai;
     private NguoiDatVeResponse nguoiDatVe;
-    private List<ChiTietVeResponse> chiTietVeList;
+    private List<VeTauResponse> veTaus;
     private BigDecimal tongTien;
-
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class ChiTietVeResponse {
-        private VeTauResponse veTau;
-        private HanhKhachResponse hanhKhach;
-    }
 
 }
