@@ -1,7 +1,7 @@
 package com.example.api_Train.Controller;
 
-import com.example.api_Train.DTO.Request.DatVe.HanhKhachDTO;
-import com.example.api_Train.DTO.Response.DatVeTau.HanhKhachResponse;
+import com.example.api_Train.DTO.Request.HanhKhachRequest;
+import com.example.api_Train.DTO.Response.HanhKhachResponse;
 import com.example.api_Train.Service.interf.HanhKhachService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +18,15 @@ public class HanhKhachController {
     private HanhKhachService hanhKhachService;
 
     @PostMapping("/create")
-    public ResponseEntity<HanhKhachResponse> createHanhKhach(@RequestBody HanhKhachDTO hanhKhachDTO) {
-        HanhKhachResponse hanhKhachResponse = hanhKhachService.createHanhKhach(hanhKhachDTO);
+    public ResponseEntity<HanhKhachResponse> createHanhKhach(@RequestBody HanhKhachRequest hanhKhachRequest) {
+        HanhKhachResponse hanhKhachResponse = hanhKhachService.createHanhKhach(hanhKhachRequest);
         return ResponseEntity.ok(hanhKhachResponse);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<HanhKhachResponse> updateHanhKhach(@PathVariable Integer id,
-            @RequestBody HanhKhachDTO hanhKhachDTO) {
-        HanhKhachResponse hanhKhachResponse = hanhKhachService.updateHanhKhach(id, hanhKhachDTO);
+            @RequestBody HanhKhachRequest hanhKhachRequest) {
+        HanhKhachResponse hanhKhachResponse = hanhKhachService.updateHanhKhach(id, hanhKhachRequest);
         return ResponseEntity.ok(hanhKhachResponse);
     }
 

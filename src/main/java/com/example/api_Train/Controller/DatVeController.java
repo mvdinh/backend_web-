@@ -1,7 +1,7 @@
 package com.example.api_Train.Controller;
 
-import com.example.api_Train.DTO.Request.DatVe.DatVeDTO;
-import com.example.api_Train.DTO.Response.DatVeTau.DatVeResponse;
+import com.example.api_Train.DTO.Request.DatVeRequest;
+import com.example.api_Train.DTO.Response.DatVeResponse;
 import com.example.api_Train.Service.impl.DatVeServiceImpl;
 
 import jakarta.validation.Valid;
@@ -22,20 +22,13 @@ public class DatVeController {
      */
 
     @PostMapping("/add")
-    public ResponseEntity<?> datVe(@Valid @RequestBody DatVeDTO datVeDTO) {
+    public ResponseEntity<?> datVe(@Valid @RequestBody DatVeRequest datVeRequest) {
         try {
-            DatVeResponse result = datVeService.datVe(datVeDTO);
+            DatVeResponse result = datVeService.datVe(datVeRequest);
             return new ResponseEntity<>(result, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-
-    /**
-     * API lấy thông tin đặt vé theo mã
-     */
-    /**
-     * API hủy đặt vé
-     */
 
 }

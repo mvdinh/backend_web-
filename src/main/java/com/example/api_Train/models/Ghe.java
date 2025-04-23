@@ -5,8 +5,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-import com.example.api_Train.enums.TrangThaiGhe;
-
 @Entity
 @Data
 @Getter

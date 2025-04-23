@@ -1,6 +1,6 @@
 package com.example.api_Train.Controller;
 
-import com.example.api_Train.DTO.Request.TuyenDuongDTO;
+import com.example.api_Train.DTO.Request.TuyenDuongRequest;
 import com.example.api_Train.DTO.Response.TuyenDuongResponse;
 import com.example.api_Train.Service.interf.TuyenDuongService;
 import com.example.api_Train.models.TuyenDuong;
@@ -19,14 +19,14 @@ public class TuyenDuongController {
     private TuyenDuongService tuyenDuongService;
 
     @PostMapping("/create")
-    public ResponseEntity<TuyenDuong> createTuyenDuong(@RequestBody TuyenDuongDTO tuyenDuongDTO) {
+    public ResponseEntity<TuyenDuong> createTuyenDuong(@RequestBody TuyenDuongRequest tuyenDuongDTO) {
         TuyenDuong tuyenDuong = tuyenDuongService.createTuyenDuong(tuyenDuongDTO);
         return ResponseEntity.ok(tuyenDuong);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<TuyenDuong> updateTuyenDuong(@PathVariable Integer id,
-            @RequestBody TuyenDuongDTO tuyenDuongDTO) {
+            @RequestBody TuyenDuongRequest tuyenDuongDTO) {
         TuyenDuong tuyenDuong = tuyenDuongService.updateTuyenDuong(id, tuyenDuongDTO);
         return ResponseEntity.ok(tuyenDuong);
     }

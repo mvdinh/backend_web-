@@ -42,4 +42,17 @@ public class SearchChuyenTauService {
                 startOfDay,
                 endOfDay);
     }
+
+    public List<ChuyenTau> getAllChuyenTauForToday() {
+        // Get today's date
+        LocalDate today = LocalDate.now();
+        LocalDateTime startOfDay = today.atStartOfDay(); // 00:00:00 của ngày hôm nay
+        LocalDateTime endOfDay = today.atTime(LocalTime.MAX); // 23:59:59.999999999 của ngày hôm nay
+
+        // Fetch top 8 train journeys for today
+        List<ChuyenTau> chuyenTaus = chuyenTauRepository.findTop8ChuyenTauForToday(startOfDay, endOfDay);
+
+        // Limit to 8 results
+        return chuyenTaus.size() > 8 ? chuyenTaus.subList(0, 8) : chuyenTaus;
+    }
 }

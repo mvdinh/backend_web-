@@ -1,6 +1,6 @@
 package com.example.api_Train.Service.impl;
 
-import com.example.api_Train.DTO.Request.TuyenDuongDTO;
+import com.example.api_Train.DTO.Request.TuyenDuongRequest;
 import com.example.api_Train.DTO.Response.TuyenDuongResponse;
 import com.example.api_Train.Repository.TuyenDuongRepository;
 import com.example.api_Train.Service.interf.TuyenDuongService;
@@ -19,7 +19,7 @@ public class TuyenDuongImpl implements TuyenDuongService {
     private TuyenDuongRepository tuyenDuongRepository;
 
     @Override
-    public TuyenDuong createTuyenDuong(TuyenDuongDTO tuyenDuongDTO) {
+    public TuyenDuong createTuyenDuong(TuyenDuongRequest tuyenDuongDTO) {
         TuyenDuong tuyenDuong = TuyenDuong.builder()
                 .gaDi(tuyenDuongDTO.getGaDi())
                 .gaDen(tuyenDuongDTO.getGaDen())
@@ -31,7 +31,7 @@ public class TuyenDuongImpl implements TuyenDuongService {
     }
 
     @Override
-    public TuyenDuong updateTuyenDuong(Integer id, TuyenDuongDTO tuyenDuongDTO) {
+    public TuyenDuong updateTuyenDuong(Integer id, TuyenDuongRequest tuyenDuongDTO) {
         Optional<TuyenDuong> optionalTuyenDuong = tuyenDuongRepository.findById(id);
         if (optionalTuyenDuong.isPresent()) {
             TuyenDuong tuyenDuong = optionalTuyenDuong.get();

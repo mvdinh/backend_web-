@@ -1,5 +1,7 @@
 package com.example.api_Train.DTO.Response;
 
+import com.example.api_Train.DTO.Request.TuyenDuongRequest;
+import com.example.api_Train.Repository.TuyenDuongRepository;
 import com.example.api_Train.models.ChuyenTau;
 
 import lombok.Data;
@@ -9,17 +11,8 @@ public class ChuyenTauSearchResponse {
     private int maChuyenTau;
     private String tenTau;
     private String ngayGioKhoiHanh;
-    private TuyenDuongDTO tuyenDuong;
+    private TuyenDuongResponse tuyenDuong;
     private int soGheTrong;
-
-    @Data
-    public static class TuyenDuongDTO {
-        private int maTuyenDuong;
-        private String gaDi;
-        private String gaDen;
-        private String thoiGianDuKien;
-        private int khoangCach;
-    }
 
     public static ChuyenTauSearchResponse ChuyenTauSearchResponse(ChuyenTau chuyenTau) {
         ChuyenTauSearchResponse response = new ChuyenTauSearchResponse();
@@ -28,12 +21,12 @@ public class ChuyenTauSearchResponse {
         response.setTenTau(chuyenTau.getTau().getTenTau());
         response.setNgayGioKhoiHanh(chuyenTau.getNgayGioKhoiHanh().toString());
 
-        TuyenDuongDTO tuyenDuongDTO = new TuyenDuongDTO();
-        tuyenDuongDTO.setMaTuyenDuong(chuyenTau.getTuyenDuong().getMaTuyen());
-        // tuyenDuongDTO.setGaDi(chuyenTau.getTuyenDuong().getGaDi());
-        // tuyenDuongDTO.setGaDen(chuyenTau.getTuyenDuong().getGaDen());
-        tuyenDuongDTO.setThoiGianDuKien(chuyenTau.getTuyenDuong().getThoiGianDuKien());
-        tuyenDuongDTO.setKhoangCach(chuyenTau.getTuyenDuong().getKhoangCach());
+        TuyenDuongResponse tuyenDuongResponse = new TuyenDuongResponse();
+        tuyenDuongResponse.setMaTuyenDuong(chuyenTau.getTuyenDuong().getMaTuyen());
+        tuyenDuongResponse.setGaDi(chuyenTau.getTuyenDuong().getGaDi().getTenGa());
+        tuyenDuongResponse.setGaDen(chuyenTau.getTuyenDuong().getGaDen().getTenGa());
+        tuyenDuongResponse.setThoiGianDuKien(chuyenTau.getTuyenDuong().getThoiGianDuKien());
+        tuyenDuongResponse.setKhoangCach(chuyenTau.getTuyenDuong().getKhoangCach());
 
         // Calculate total empty seats
         int soGheTrong = chuyenTau.getTau().getDanhSachToaTau().stream()
@@ -42,7 +35,7 @@ public class ChuyenTauSearchResponse {
                 .mapToInt(ghe -> 1)
                 .sum();
 
-        response.setTuyenDuong(tuyenDuongDTO);
+        response.setTuyenDuong(tuyenDuongResponse);
         response.setSoGheTrong(soGheTrong);
 
         return response;

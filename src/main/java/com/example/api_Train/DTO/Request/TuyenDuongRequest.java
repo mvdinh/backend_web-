@@ -13,7 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class TuyenDuongDTO {
+public class TuyenDuongRequest {
 
     @JsonProperty("MaGaDi")
     private GaTau gaDi;

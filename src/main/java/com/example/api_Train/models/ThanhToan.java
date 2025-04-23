@@ -31,9 +31,8 @@ public class ThanhToan {
     @JoinColumn(name = "MaNguoiDat")
     private NguoiDatVe nguoiDatVe;
 
-    @Temporal(TemporalType.DATE)
     @Column(name = "NgayThanhToan")
-    private Date ngayThanhToan;
+    private LocalDateTime ngayThanhToan;
 
     @Column(name = "SoTien", precision = 10, scale = 2, nullable = false)
     private BigDecimal soTien;

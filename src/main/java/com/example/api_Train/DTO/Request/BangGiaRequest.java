@@ -3,16 +3,7 @@ package com.example.api_Train.DTO.Request;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import com.example.api_Train.models.ChuyenTau;
-import com.example.api_Train.models.LoaiCho;
-import com.example.api_Train.models.Tau;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.*;
 
 @Data
@@ -22,7 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class BangGiaDTO {
+public class BangGiaRequest {
 
     @JsonProperty("MaChuyenTau")
     private Integer maChuyenTau;

@@ -1,16 +1,7 @@
-package com.example.api_Train.DTO.Response.DatVeTau;
+package com.example.api_Train.DTO.Response;
 
-import lombok.*;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import com.example.api_Train.models.ChuyenTau;
 import com.example.api_Train.models.HanhKhach;
-import com.example.api_Train.models.ToaTau;
-import com.example.api_Train.DTO.Response.TuyenDuongResponse;
-import com.example.api_Train.models.BangGia;
+import lombok.*;
 
 @Data
 @Builder
