@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -27,7 +28,8 @@ public class Ghe {
     @Column(name = "TenGhe", nullable = false, length = 10)
     private String tenGhe;
 
-    @Column(name = "TrangThai", nullable = false, length = 50)
-    private String trangThai;
+    // Relationship with GheChuyenTau
+    @OneToMany(mappedBy = "ghe", cascade = CascadeType.ALL)
+    private List<GheChuyenTau> gheChuyenTaus;
 
 }

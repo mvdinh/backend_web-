@@ -33,4 +33,7 @@ public class ChuyenTau {
 
     @OneToMany(mappedBy = "chuyenTau", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<BangGia> danhSachBangGia;
+
+    @OneToMany(mappedBy = "chuyenTau", cascade = CascadeType.ALL)
+    private List<GheChuyenTau> gheChuyenTaus;
 }

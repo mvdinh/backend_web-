@@ -28,10 +28,16 @@ public class ChuyenTauSearchResponse {
         tuyenDuongResponse.setThoiGianDuKien(chuyenTau.getTuyenDuong().getThoiGianDuKien());
         tuyenDuongResponse.setKhoangCach(chuyenTau.getTuyenDuong().getKhoangCach());
 
-        // Calculate total empty seats
+        // Calculate total empty seats using GheChuyenTau intermediate table
         int soGheTrong = chuyenTau.getTau().getDanhSachToaTau().stream()
                 .flatMap(toa -> toa.getDanhSachGhe().stream())
-                .filter(ghe -> "Trống".equalsIgnoreCase(ghe.getTrangThai()))
+                .filter(ghe -> {
+                    // Find the corresponding GheChuyenTau for this Ghe and this ChuyenTau
+                    return ghe.getGheChuyenTaus().stream()
+                            .filter(gheChuyenTau -> gheChuyenTau.getChuyenTau().getMaChuyenTau() == chuyenTau
+                                    .getMaChuyenTau())
+                            .anyMatch(gheChuyenTau -> "Trống".equalsIgnoreCase(gheChuyenTau.getTrangThai()));
+                })
                 .mapToInt(ghe -> 1)
                 .sum();
 

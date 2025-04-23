@@ -70,20 +70,29 @@ public class ChuyenTauResponse {
                             .maToa(toa.getMaToa())
                             .tenToa(toa.getTenToa())
                             .loaiToa(loaiCho.getTenLoaiCho())
-                            .danhSachGhe(mapGheToResponse(toa, giaVe))
+                            .danhSachGhe(mapGheToResponse(toa, giaVe, chuyenTau))
                             .build();
                 })
                 .collect(Collectors.toList());
     }
 
-    public static List<GheResponse> mapGheToResponse(ToaTau toa, BigDecimal giaVe) {
+    public static List<GheResponse> mapGheToResponse(ToaTau toa, BigDecimal giaVe, ChuyenTau chuyenTau) {
         return toa.getDanhSachGhe().stream()
-                .map((Ghe ghe) -> GheResponse.builder()
-                        .maGhe(ghe.getMaGhe())
-                        .tenGhe(ghe.getTenGhe())
-                        .trangThai(ghe.getTrangThai())
-                        .giaVe(giaVe)
-                        .build())
+                .map((Ghe ghe) -> {
+                    // Find the seat status for this specific train trip
+                    String trangThai = chuyenTau.getGheChuyenTaus().stream()
+                            .filter(gheChuyenTau -> gheChuyenTau.getGhe().getMaGhe().equals(ghe.getMaGhe()))
+                            .findFirst()
+                            .map(GheChuyenTau::getTrangThai)
+                            .orElse("Null"); // Default if not found
+
+                    return GheResponse.builder()
+                            .maGhe(ghe.getMaGhe())
+                            .tenGhe(ghe.getTenGhe())
+                            .trangThai(trangThai)
+                            .giaVe(giaVe)
+                            .build();
+                })
                 .collect(Collectors.toList());
     }
 }

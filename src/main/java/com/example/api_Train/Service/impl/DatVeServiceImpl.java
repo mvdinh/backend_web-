@@ -63,6 +63,9 @@ public class DatVeServiceImpl implements DatVeService {
     @Autowired
     private TauRepository tauRepository;
 
+    @Autowired
+    private GheChuyenTauRepository gheChuyenTauRepository;
+
     @Transactional
     public DatVeResponse datVe(DatVeRequest datVeRequest) {
         try {
@@ -134,6 +137,11 @@ public class DatVeServiceImpl implements DatVeService {
                 Ghe ghe = gheRepository.findById(chiTiet.getVeTau().getMaGhe())
                         .orElseThrow(() -> new NotFound(
                                 "Không tìm thấy ghế với mã: " + chiTiet.getVeTau().getMaGhe()));
+                GheChuyenTau gheChuyenTau = gheChuyenTauRepository.findByChuyenTau_MaChuyenTauAndGhe_MaGhe(
+                        chiTiet.getVeTau().getMaChuyenTau(),
+                        chiTiet.getVeTau().getMaGhe());
+                gheChuyenTau.setTrangThai("ĐANG ĐẶT");
+                gheChuyenTauRepository.save(gheChuyenTau);
 
                 // Lấy thông tin giá vé
                 BangGia giaVe = giaVeRepository
@@ -290,7 +298,7 @@ public class DatVeServiceImpl implements DatVeService {
     /**
      * Tạo đối tượng DatVeResponse từ đối tượng DatVe và danh sách VeTau
      */
-    private DatVeResponse createDatVeResponse(DatVe datVe, List<VeTau> danhSachVe) {
+    public static DatVeResponse createDatVeResponse(DatVe datVe, List<VeTau> danhSachVe) {
         if (datVe == null) {
             throw new IllegalArgumentException("Thông tin đặt vé không được để trống");
         }

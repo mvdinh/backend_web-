@@ -23,8 +23,8 @@ public class ThanhToan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer maThanhToan;
 
-    @ManyToOne
-    @JoinColumn(name = "MaVe")
+    @OneToOne
+    @JoinColumn(name = "MaVe", unique = true)
     private VeTau veTau;
 
     @ManyToOne

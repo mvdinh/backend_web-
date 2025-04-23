@@ -37,7 +37,6 @@ public class GheResponse {
                 return GheResponse.builder()
                                 .maGhe(ghe.getMaGhe())
                                 .tenGhe(ghe.getTenGhe())
-                                .trangThai(ghe.getTrangThai())
                                 .giaTien(giaTien)
                                 .build();
         }
