@@ -1,5 +1,6 @@
 package com.example.api_Train.Controller;
 
+import com.example.api_Train.DTO.Response.NguoiDatVeResponse;
 import com.example.api_Train.DTO.Response.VeTauResponse;
 import com.example.api_Train.models.NguoiDatVe;
 import com.example.api_Train.models.VeTau;
@@ -11,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -24,19 +24,30 @@ public class NguoiDatVeController {
     @Autowired
     private VeTauRepository veTauRepository;
 
+    // Get danh sách tất cả người đặt vé
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllNguoiDatVe() {
+        List<NguoiDatVe> danhSachNguoiDat = nguoiDatVeRepository.findAll();
+
+        List<NguoiDatVeResponse> danhSachResponse = danhSachNguoiDat.stream()
+                .map(NguoiDatVeResponse::mapNguoiDatVeResponse)
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(danhSachResponse, HttpStatus.OK);
+    }
+
+    // Get danh sách vé theo mã người đặt
     @GetMapping("/{maNguoiDat}")
     public ResponseEntity<?> getByMaNguoiDat(@PathVariable Integer maNguoiDat) {
-        // Check if nguoi dat ve exists
         boolean exists = nguoiDatVeRepository.existsById(maNguoiDat);
 
         if (!exists) {
             return new ResponseEntity<>("Không tìm thấy người đặt vé", HttpStatus.NOT_FOUND);
         }
 
-        // Get tickets directly using SQL query
         List<VeTau> danhSachVe = veTauRepository.findVeTauByNguoiDatVeId(maNguoiDat);
 
-        // Convert to response objects
         List<VeTauResponse> danhSachVeResponse = danhSachVe.stream()
                 .map(VeTauResponse::fromVeTau)
                 .collect(Collectors.toList());
